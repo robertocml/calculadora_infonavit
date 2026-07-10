@@ -77,7 +77,7 @@ export function MovementsTable({ movements, onChange }: Props) {
             {editing && (
               <button
                 onClick={addRow}
-                className="rounded-lg bg-teal-600 px-3 py-1 text-xs font-medium text-white hover:bg-teal-700"
+                className="rounded-lg bg-brand-blue px-3 py-1 text-xs font-medium text-white hover:bg-brand-blueDark"
               >
                 + Agregar movimiento
               </button>

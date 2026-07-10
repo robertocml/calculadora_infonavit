@@ -10,16 +10,16 @@ export function ComparisonSummaryCard({ comparison }: { comparison: ComparisonSu
   return (
     <Card title="¿Qué tanto te ahorras?">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <div className="rounded-xl bg-sky-50 p-4 dark:bg-sky-950/30">
-          <p className="text-xs font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-300">Sin pagos extra</p>
+        <div className="rounded-xl bg-brand-red/10 p-4 dark:bg-brand-red/15">
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-red dark:text-red-300">Sin pagos extra</p>
           <div className="mt-3 space-y-3">
             <Stat label="Fecha de liquidación" value={formatDate(comparison.payoffDateBaseline)} />
             <Stat label="Tiempo restante" value={monthsToYearsMonths(baseline.payoffMonths)} />
             <Stat label="Interés total a pagar" value={formatCurrency(baseline.totalInterestPaid)} />
           </div>
         </div>
-        <div className="rounded-xl bg-emerald-50 p-4 dark:bg-emerald-950/30">
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">Con pagos extra</p>
+        <div className="rounded-xl bg-brand-blue/10 p-4 dark:bg-brand-blue/20">
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-blue dark:text-blue-300">Con pagos extra</p>
           <div className="mt-3 space-y-3">
             <Stat label="Fecha de liquidación" value={formatDate(comparison.payoffDateWithExtras)} />
             <Stat label="Tiempo restante" value={monthsToYearsMonths(withExtras.payoffMonths)} />
@@ -29,7 +29,7 @@ export function ComparisonSummaryCard({ comparison }: { comparison: ComparisonSu
       </div>
 
       {!noExtraSelected && !withExtras.balanceNeverReachesZero && (
-        <div className="mt-5 grid grid-cols-1 gap-4 rounded-xl border border-teal-200 bg-teal-50 p-4 dark:border-teal-900 dark:bg-teal-950/30 sm:grid-cols-2">
+        <div className="mt-5 grid grid-cols-1 gap-4 rounded-xl border border-brand-blue/20 bg-brand-mist/40 p-4 dark:border-brand-blue/40 dark:bg-brand-blue/15 sm:grid-cols-2">
           <Stat
             label="Tiempo que te ahorras"
             value={Number.isFinite(monthsSaved) ? monthsToYearsMonths(monthsSaved) : '—'}

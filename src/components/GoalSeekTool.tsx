@@ -53,21 +53,21 @@ export function GoalSeekTool({ startDate, startBalance, annualRatePct, settings 
         </div>
         <button
           onClick={handleCalculate}
-          className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-teal-700"
+          className="rounded-lg bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-blueDark"
         >
           Calcular
         </button>
       </div>
 
       {result && (
-        <div className="mt-5 rounded-xl bg-teal-50 p-4 dark:bg-teal-950/30">
+        <div className="mt-5 rounded-xl bg-brand-mist/40 p-4 dark:bg-brand-blue/15">
           {result.extraMonthly <= 0 ? (
             <p className="text-sm text-slate-700 dark:text-slate-200">
               ¡Con tu pago mensual base ya liquidas tu crédito antes de {targetYears} años! No necesitas abonar extra.
             </p>
           ) : (
             <p className="text-sm text-slate-700 dark:text-slate-200">
-              Necesitas abonar <span className="font-semibold text-teal-700 dark:text-teal-300">{formatCurrency(result.extraMonthly)}</span> extra
+              Necesitas abonar <span className="font-semibold text-brand-blue dark:text-blue-300">{formatCurrency(result.extraMonthly)}</span> extra
               cada mes (además de tu pago base y tu aguinaldo, si aplicas alguno) para liquidar tu crédito alrededor de{' '}
               <span className="font-semibold">{formatDate(result.payoffDate)}</span>.
             </p>

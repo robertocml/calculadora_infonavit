@@ -32,7 +32,7 @@ export function ProgressCard({ credit }: { credit: CreditInfo }) {
           </div>
           <div className="mt-1.5 h-3 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
             <div
-              className="h-full rounded-full bg-teal-500"
+              className="h-full rounded-full bg-brand-blue"
               style={{ width: `${Math.min(100, Math.max(0, pctPaid ?? 0))}%` }}
             />
           </div>
@@ -50,7 +50,7 @@ export function ProgressCard({ credit }: { credit: CreditInfo }) {
           </div>
           <div className="mt-1.5 h-3 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
             <div
-              className="h-full rounded-full bg-indigo-500"
+              className="h-full rounded-full bg-brand-red"
               style={{ width: `${Math.min(100, Math.max(0, pctTime ?? 0))}%` }}
             />
           </div>

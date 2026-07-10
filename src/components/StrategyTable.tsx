@@ -64,10 +64,10 @@ export function StrategyTable({ startDate, startBalance, annualRatePct, settings
                   <td className="py-2 pr-3">{formatDate(s.comparison.payoffDateWithExtras)}</td>
                   <td className="py-2 pr-3">{monthsToYearsMonths(s.comparison.withExtras.payoffMonths)}</td>
                   <td className="py-2 pr-3">{formatCurrency(s.comparison.withExtras.totalInterestPaid)}</td>
-                  <td className="py-2 pr-3 text-emerald-600 dark:text-emerald-400">
+                  <td className="py-2 pr-3 text-brand-blue dark:text-blue-400">
                     {isBase || !Number.isFinite(s.comparison.monthsSaved) ? '—' : monthsToYearsMonths(s.comparison.monthsSaved)}
                   </td>
-                  <td className="py-2 pr-3 text-emerald-600 dark:text-emerald-400">
+                  <td className="py-2 pr-3 text-brand-blue dark:text-blue-400">
                     {isBase || !Number.isFinite(s.comparison.interestSaved) ? '—' : formatCurrency(s.comparison.interestSaved)}
                   </td>
                 </tr>

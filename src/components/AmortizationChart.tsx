@@ -48,8 +48,8 @@ export function AmortizationChart({ movements, comparison, startDate, startBalan
             <Legend />
             <ReferenceLine x={startDate} stroke="#94a3b8" strokeDasharray="4 4" label={{ value: 'Hoy', fontSize: 11, fill: '#94a3b8' }} />
             <Line type="monotone" dataKey="historico" name="Histórico" stroke="#64748b" dot={false} strokeWidth={2} connectNulls />
-            <Line type="monotone" dataKey="sinExtra" name="Sin pagos extra" stroke="#0ea5e9" dot={false} strokeWidth={2} connectNulls />
-            <Line type="monotone" dataKey="conExtra" name="Con pagos extra" stroke="#16a34a" dot={false} strokeWidth={2.5} connectNulls />
+            <Line type="monotone" dataKey="sinExtra" name="Sin pagos extra" stroke="#D1001F" dot={false} strokeWidth={2} connectNulls />
+            <Line type="monotone" dataKey="conExtra" name="Con pagos extra" stroke="#283A90" dot={false} strokeWidth={2.5} connectNulls />
           </LineChart>
         </ResponsiveContainer>
       </div>

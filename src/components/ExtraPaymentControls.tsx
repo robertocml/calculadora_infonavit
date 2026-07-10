@@ -41,7 +41,7 @@ function NumberField({
         step={step}
         value={Math.min(value, max)}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="mt-2 w-full accent-teal-600"
+        className="mt-2 w-full accent-brand-blue"
       />
       <input
         type="number"

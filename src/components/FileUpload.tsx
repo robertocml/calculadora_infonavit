@@ -31,8 +31,8 @@ export function FileUpload({ onFile, loading, error }: Props) {
         onClick={() => inputRef.current?.click()}
         className={`cursor-pointer rounded-2xl border-2 border-dashed p-12 text-center transition ${
           dragOver
-            ? 'border-teal-500 bg-teal-50 dark:bg-teal-950/30'
-            : 'border-slate-300 hover:border-teal-400 dark:border-slate-700'
+            ? 'border-brand-blue bg-brand-mist/40 dark:bg-brand-blue/15'
+            : 'border-slate-300 hover:border-brand-blue/60 dark:border-slate-700'
         }`}
       >
         <input
