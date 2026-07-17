@@ -2,11 +2,12 @@ import { useRef, useState } from 'react'
 
 interface Props {
   onFile: (file: File) => void
+  onManualEntry: () => void
   loading: boolean
   error: string | null
 }
 
-export function FileUpload({ onFile, loading, error }: Props) {
+export function FileUpload({ onFile, onManualEntry, loading, error }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
 
@@ -55,6 +56,20 @@ export function FileUpload({ onFile, loading, error }: Props) {
           {error}
         </p>
       )}
+
+      <div className="mt-6 flex items-center gap-3">
+        <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+        <span className="text-xs text-slate-400 dark:text-slate-500">o</span>
+        <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+      </div>
+
+      <button
+        onClick={onManualEntry}
+        className="mt-6 w-full rounded-xl border border-slate-300 px-4 py-3 text-center text-sm font-medium text-slate-600 transition hover:border-brand-blue/60 hover:text-brand-blue dark:border-slate-700 dark:text-slate-300"
+      >
+        ✏️ Prefiero capturar los datos de mi crédito manualmente
+      </button>
+
       <p className="mt-4 text-center text-xs text-slate-400 dark:text-slate-500">
         🔒 Todo se procesa en tu navegador. Tu PDF nunca se sube a ningún servidor.
       </p>

@@ -6,7 +6,6 @@ import { FileUpload } from './components/FileUpload'
 import { GoalSeekTool } from './components/GoalSeekTool'
 import { MovementsTable } from './components/MovementsTable'
 import { ProgressCard } from './components/ProgressCard'
-import { SimulationParamsCard, type SimParams } from './components/SimulationParams'
 import { StrategyTable } from './components/StrategyTable'
 import { compareScenarios } from './lib/amortization'
 import { parseInfonavitStatement } from './lib/pdfParser'
@@ -24,6 +23,13 @@ const DEFAULT_SETTINGS: ExtraPaymentSettings = {
   extraAnnualMonth: 12,
 }
 
+const EMPTY_STATEMENT: ParsedStatement = {
+  credit: {},
+  movements: [],
+  warnings: [],
+  source: 'manual',
+}
+
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10)
 }
@@ -31,7 +37,6 @@ function todayIso(): string {
 export default function App() {
   const [statement, setStatement] = useState<ParsedStatement | null>(null)
   const [settings, setSettings] = useState<ExtraPaymentSettings>(DEFAULT_SETTINGS)
-  const [simParams, setSimParams] = useState<SimParams>({ startDate: todayIso(), startBalance: 0, annualRatePct: 0 })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -40,12 +45,6 @@ export default function App() {
     if (stored) {
       setStatement(stored.statement)
       setSettings(stored.settings)
-      const c = stored.statement.credit
-      setSimParams({
-        startDate: c.fechaCorte ?? todayIso(),
-        startBalance: c.saldoCapital ?? 0,
-        annualRatePct: c.tasaInteres ?? 0,
-      })
     }
   }, [])
 
@@ -53,20 +52,23 @@ export default function App() {
     if (statement) saveToStorage(statement, settings)
   }, [statement, settings])
 
+  // Keep "pago mensual base" in sync with the credit's official mensualidad until the
+  // user has set one explicitly — covers both the PDF flow and manual entry, where the
+  // mensualidad is typed into a separate card further down the page.
+  const officialMensualidad = statement?.credit.mensualidadConRelacionLaboral ?? statement?.credit.mensualidadSinRelacionLaboral
+  useEffect(() => {
+    if (officialMensualidad) {
+      setSettings((s) => (s.monthlyBasePayment === 0 ? { ...s, monthlyBasePayment: officialMensualidad } : s))
+    }
+  }, [officialMensualidad])
+
   async function handleFile(file: File) {
     setLoading(true)
     setError(null)
     try {
       const parsed = await parseInfonavitStatement(file)
       setStatement(parsed)
-      const c = parsed.credit
-      const monthlyBase = c.mensualidadConRelacionLaboral ?? c.mensualidadSinRelacionLaboral ?? 0
-      setSettings({ ...DEFAULT_SETTINGS, monthlyBasePayment: monthlyBase })
-      setSimParams({
-        startDate: c.fechaCorte ?? todayIso(),
-        startBalance: c.saldoCapital ?? 0,
-        annualRatePct: c.tasaInteres ?? 0,
-      })
+      setSettings(DEFAULT_SETTINGS)
     } catch (e) {
       console.error(e)
       setError('No pudimos leer ese PDF. Verifica que sea tu Estado de Cuenta Histórico de INFONAVIT.')
@@ -75,18 +77,34 @@ export default function App() {
     }
   }
 
+  function handleManualEntry() {
+    setError(null)
+    setStatement(EMPTY_STATEMENT)
+    setSettings(DEFAULT_SETTINGS)
+  }
+
   function handleReset() {
     clearStorage()
     setStatement(null)
     setSettings(DEFAULT_SETTINGS)
-    setSimParams({ startDate: todayIso(), startBalance: 0, annualRatePct: 0 })
     setError(null)
   }
+
+  const simParams = useMemo(() => {
+    const c = statement?.credit ?? {}
+    return {
+      startDate: c.fechaCorte ?? todayIso(),
+      startBalance: c.saldoCapital ?? 0,
+      annualRatePct: c.tasaInteres ?? 0,
+    }
+  }, [statement])
 
   const comparison = useMemo(
     () => compareScenarios(simParams.startDate, simParams.startBalance, simParams.annualRatePct, settings),
     [simParams, settings],
   )
+
+  const isEmptyCredit = statement ? Object.keys(statement.credit).length === 0 : false
 
   return (
     <div className="min-h-screen">
@@ -106,7 +124,7 @@ export default function App() {
               onClick={handleReset}
               className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
             >
-              Cargar otro PDF
+              Empezar de nuevo
             </button>
           )}
         </div>
@@ -115,10 +133,17 @@ export default function App() {
       <main className="mx-auto max-w-6xl px-4 py-8">
         {!statement ? (
           <div className="py-12">
-            <FileUpload onFile={handleFile} loading={loading} error={error} />
+            <FileUpload onFile={handleFile} onManualEntry={handleManualEntry} loading={loading} error={error} />
           </div>
         ) : (
           <div className="space-y-6">
+            {statement.source === 'manual' && (
+              <div className="rounded-xl bg-brand-mist/40 px-4 py-3 text-sm text-slate-700 dark:bg-brand-blue/15 dark:text-slate-200">
+                Estás capturando tus datos manualmente. Llena los campos de tu crédito abajo (los puedes encontrar en tu
+                estado de cuenta o app de INFONAVIT) para que la simulación sea precisa.
+              </div>
+            )}
+
             {statement.warnings.length > 0 && (
               <div className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:bg-amber-950/30 dark:text-amber-300">
                 <p className="font-medium">Revisa estos puntos:</p>
@@ -130,12 +155,13 @@ export default function App() {
               </div>
             )}
 
-            <CreditSummary credit={statement.credit} />
+            <CreditSummary
+              credit={statement.credit}
+              onChange={(credit) => setStatement({ ...statement, credit })}
+              startInEditMode={isEmptyCredit}
+            />
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <ProgressCard credit={statement.credit} />
-              <SimulationParamsCard params={simParams} onChange={setSimParams} />
-            </div>
+            <ProgressCard credit={statement.credit} />
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-[380px_1fr]">
               <ExtraPaymentControls

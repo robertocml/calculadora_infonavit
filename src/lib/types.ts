@@ -33,6 +33,7 @@ export interface ParsedStatement {
   credit: CreditInfo
   movements: Movement[]
   warnings: string[]
+  source: 'pdf' | 'manual'
 }
 
 export interface ScheduleEntry {

@@ -226,5 +226,5 @@ export async function parseInfonavitStatement(file: File): Promise<ParsedStateme
     warnings.push('No se encontraron movimientos en la tabla del PDF. Podrás capturarlos manualmente.')
   }
 
-  return { credit, movements, warnings }
+  return { credit, movements, warnings, source: 'pdf' }
 }
